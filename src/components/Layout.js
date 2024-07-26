@@ -1,25 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const NavItem = ({ to, label }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
+  return (
+    <motion.div 
+      className="relative py-2 pl-8"
+      initial={false}
+      animate={{ x: isActive ? 5 : 0 }}
+    >
+      <Link 
+        to={to} 
+        className={`text-${isActive ? 'white' : 'gray-400'} hover:text-white transition-colors duration-300`}
+      >
+        {label}
+      </Link>
+      <motion.div
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 h-0.5 bg-green"
+        initial={{ width: 0 }}
+        animate={{ width: isActive ? 24 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.div>
+  );
+};
+
 const Layout = ({ children }) => {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const menuVariants = {
-    open: { opacity: 1, x: 0 },
-    closed: { opacity: 0, x: "100%" },
-  };
 
   return (
     <div className="min-h-screen bg-navy text-slate overflow-hidden">
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100 }}
-        className="py-12 relative z-10"
-      >
-        <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 py-12">
+        <motion.header
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ type: "spring", stiffness: 100 }}
+          className="mb-12 relative z-10"
+        >
           <motion.h1 
             className="text-5xl font-bold text-lightest-slate"
             initial={{ opacity: 0 }}
@@ -44,50 +64,37 @@ const Layout = ({ children }) => {
           >
             Crafting digital experiences that push the boundaries of web technology.
           </motion.p>
+        </motion.header>
+
+        <div className="flex">
+          <nav className="w-1/4">
+            <motion.div 
+              className="space-y-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <NavItem to="/" label="ABOUT" />
+              <NavItem to="/experience" label="EXPERIENCE" />
+              <NavItem to="/projects" label="PROJECTS" />
+            </motion.div>
+          </nav>
+
+          <main className="w-3/4 relative z-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </main>
         </div>
-      </motion.header>
-
-      <motion.button
-        className="fixed top-4 right-4 z-50 text-green"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        {isMenuOpen ? "Close" : "Menu"}
-      </motion.button>
-
-      <motion.nav
-        className="fixed top-0 right-0 bottom-0 w-64 bg-light-navy p-8 z-40"
-        variants={menuVariants}
-        initial="closed"
-        animate={isMenuOpen ? "open" : "closed"}
-      >
-        <ul className="space-y-6 font-mono text-sm">
-          <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Link to="/" className="text-lightest-slate hover:text-green transition duration-300" onClick={() => setIsMenuOpen(false)}>ABOUT</Link>
-          </motion.li>
-          <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Link to="/experience" className="text-lightest-slate hover:text-green transition duration-300" onClick={() => setIsMenuOpen(false)}>EXPERIENCE</Link>
-          </motion.li>
-          <motion.li whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Link to="/projects" className="text-lightest-slate hover:text-green transition duration-300" onClick={() => setIsMenuOpen(false)}>PROJECTS</Link>
-          </motion.li>
-        </ul>
-      </motion.nav>
-
-      <main className="container mx-auto px-4 py-8 relative z-10">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+      </div>
 
       <motion.footer
         initial={{ opacity: 0 }}

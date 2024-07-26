@@ -10,7 +10,7 @@ const ProjectCard = ({ title, description, image, link, technologies, index }) =
     whileHover={{ y: -10 }}
   >
     <motion.img
-      src={image}
+      src={`https://via.placeholder.com/400x200.png?text=${title.replace(/\s+/g, '+')}`}
       alt={title}
       className="w-full h-48 object-cover"
       whileHover={{ scale: 1.1 }}
@@ -56,42 +56,36 @@ const Projects = () => {
     {
       title: "AI-Powered Task Manager",
       description: "A smart task management application that uses machine learning to prioritize and categorize tasks based on user behavior and preferences.",
-      image: "/api/placeholder/800/400",
       link: "#",
       technologies: ["React", "Node.js", "TensorFlow.js", "MongoDB"]
     },
     {
       title: "Virtual Reality Art Gallery",
       description: "An immersive VR experience showcasing digital art in a virtual gallery space, allowing users to interact with and purchase artwork.",
-      image: "/api/placeholder/800/400",
       link: "#",
       technologies: ["Three.js", "WebVR", "React", "WebGL"]
     },
     {
       title: "Blockchain-based Supply Chain",
       description: "A decentralized application for tracking product supply chains, ensuring transparency and authenticity from manufacturer to consumer.",
-      image: "/api/placeholder/800/400",
       link: "#",
       technologies: ["Ethereum", "Solidity", "Web3.js", "React"]
     },
     {
       title: "Eco-Friendly Smart Home System",
       description: "An IoT solution for managing home energy consumption, integrating with renewable energy sources and providing real-time analytics.",
-      image: "/api/placeholder/800/400",
       link: "#",
       technologies: ["React Native", "Node.js", "MQTT", "InfluxDB"]
     },
     {
       title: "AI Language Learning Assistant",
       description: "A mobile app that uses natural language processing to provide personalized language learning experiences, including real-time pronunciation feedback.",
-      image: "/api/placeholder/800/400",
       link: "#",
       technologies: ["Flutter", "Python", "TensorFlow", "Google Cloud Speech-to-Text"]
     },
     {
       title: "Augmented Reality City Guide",
       description: "A mobile application that overlays historical information, reviews, and navigation data onto real-world views of city landmarks and businesses.",
-      image: "/api/placeholder/800/400",
       link: "#",
       technologies: ["ARKit", "Swift", "CoreML", "Firebase"]
     }
