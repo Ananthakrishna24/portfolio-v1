@@ -1,61 +1,130 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
-const ProjectCard = ({ title, description, image, link, technologies }) => (
-  <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg mb-6">
-    <img src={image} alt={title} className="w-full h-48 object-cover" />
+const ProjectCard = ({ title, description, image, link, technologies, index }) => (
+  <motion.div
+    className="bg-light-navy rounded-lg overflow-hidden shadow-lg"
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: index * 0.1 }}
+    whileHover={{ y: -10 }}
+  >
+    <motion.img
+      src={image}
+      alt={title}
+      className="w-full h-48 object-cover"
+      whileHover={{ scale: 1.1 }}
+      transition={{ duration: 0.3 }}
+    />
     <div className="p-6">
-      <h3 className="text-xl font-semibold mb-2">
-        <a href={link} className="text-blue-400 hover:underline">{title}</a>
-      </h3>
-      <p className="text-gray-300 mb-4">{description}</p>
+      <motion.h3
+        className="text-xl font-semibold mb-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: index * 0.1 + 0.3 }}
+      >
+        <a href={link} className="text-green hover:underline">{title}</a>
+      </motion.h3>
+      <motion.p
+        className="text-slate mb-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: index * 0.1 + 0.4 }}
+      >
+        {description}
+      </motion.p>
       <div className="flex flex-wrap">
-        {technologies.map((tech, index) => (
-          <span key={index} className="bg-gray-700 text-gray-300 rounded-full px-3 py-1 text-sm mr-2 mb-2">
+        {technologies.map((tech, techIndex) => (
+          <motion.span
+            key={techIndex}
+            className="bg-navy text-green rounded-full px-3 py-1 text-sm mr-2 mb-2"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 + 0.5 + techIndex * 0.1 }}
+            whileHover={{ scale: 1.1 }}
+          >
             {tech}
-          </span>
+          </motion.span>
         ))}
       </div>
     </div>
-  </div>
+  </motion.div>
 );
 
 const Projects = () => {
   const projects = [
     {
-      title: "Build a Spotify Connected App",
-      description: "Video course that teaches how to build a web app with the Spotify Web API. Topics covered include the principles of REST APIs, user auth flows, Node, Express, React, Styled Components, and more.",
+      title: "AI-Powered Task Manager",
+      description: "A smart task management application that uses machine learning to prioritize and categorize tasks based on user behavior and preferences.",
       image: "/api/placeholder/800/400",
       link: "#",
-      technologies: ["React", "Express", "Spotify API", "Heroku"]
+      technologies: ["React", "Node.js", "TensorFlow.js", "MongoDB"]
     },
     {
-      title: "Spotify Profile",
-      description: "Web app for visualizing personalized Spotify data. View your top artists, top tracks, recently played tracks, and detailed audio information about each track. Create and save new playlists of recommended tracks based on your existing playlists and more.",
+      title: "Virtual Reality Art Gallery",
+      description: "An immersive VR experience showcasing digital art in a virtual gallery space, allowing users to interact with and purchase artwork.",
       image: "/api/placeholder/800/400",
       link: "#",
-      technologies: ["React", "Express", "Spotify API", "Heroku"]
+      technologies: ["Three.js", "WebVR", "React", "WebGL"]
     },
     {
-      title: "Halcyon Theme",
-      description: "Minimal dark blue theme for VS Code, Sublime Text, Atom, iTerm, and more.",
+      title: "Blockchain-based Supply Chain",
+      description: "A decentralized application for tracking product supply chains, ensuring transparency and authenticity from manufacturer to consumer.",
       image: "/api/placeholder/800/400",
       link: "#",
-      technologies: ["VS Code", "Sublime Text", "Atom"]
+      technologies: ["Ethereum", "Solidity", "Web3.js", "React"]
     },
     {
-      title: "brittanychiang.com (v4)",
-      description: "An old portfolio site built with Gatsby and hosted on Netlify.",
+      title: "Eco-Friendly Smart Home System",
+      description: "An IoT solution for managing home energy consumption, integrating with renewable energy sources and providing real-time analytics.",
       image: "/api/placeholder/800/400",
       link: "#",
-      technologies: ["Gatsby", "Styled Components", "Netlify"]
+      technologies: ["React Native", "Node.js", "MQTT", "InfluxDB"]
+    },
+    {
+      title: "AI Language Learning Assistant",
+      description: "A mobile app that uses natural language processing to provide personalized language learning experiences, including real-time pronunciation feedback.",
+      image: "/api/placeholder/800/400",
+      link: "#",
+      technologies: ["Flutter", "Python", "TensorFlow", "Google Cloud Speech-to-Text"]
+    },
+    {
+      title: "Augmented Reality City Guide",
+      description: "A mobile application that overlays historical information, reviews, and navigation data onto real-world views of city landmarks and businesses.",
+      image: "/api/placeholder/800/400",
+      link: "#",
+      technologies: ["ARKit", "Swift", "CoreML", "Firebase"]
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {projects.map((project, index) => (
-        <ProjectCard key={index} {...project} />
-      ))}
+    <div className="max-w-6xl mx-auto">
+      <motion.h2
+        className="text-3xl font-bold mb-8 text-lightest-slate"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Featured Projects
+      </motion.h2>
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+      >
+        {projects.map((project, index) => (
+          <ProjectCard key={index} {...project} index={index} />
+        ))}
+      </motion.div>
     </div>
   );
 };
