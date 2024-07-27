@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
+import Download from './components/Download';
 
 const BackgroundAnimation = () => (
   <svg
@@ -43,6 +44,7 @@ function App() {
             <Route exact path="/" component={About} />
             <Route path="/experience" component={Experience} />
             <Route path="/projects" component={Projects} />
+            <Route path="/download" component={Download} />
           </Switch>
         </Layout>
       </div>

@@ -29,7 +29,6 @@ const NavItem = ({ to, label }) => {
 };
 
 const Layout = ({ children }) => {
-  //const location = useLocation();
   const [isDark, setIsDark] = useState(true);
 
   const toggleTheme = () => {
@@ -66,6 +65,7 @@ const Layout = ({ children }) => {
             <NavItem to="/" label="ABOUT" />
             <NavItem to="/experience" label="EXPERIENCE" />
             <NavItem to="/projects" label="PROJECTS" />
+            <NavItem to="/download" label="DOWNLOAD" />
           </div>
         </nav>
 
