@@ -29,7 +29,7 @@ const NavItem = ({ to, label }) => {
 };
 
 const Layout = ({ children }) => {
-  const location = useLocation();
+  //const location = useLocation();
   const [isDark, setIsDark] = useState(true);
 
   const toggleTheme = () => {
