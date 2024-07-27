@@ -42,8 +42,10 @@ const Layout = ({ children }) => {
         isDark ? "dark bg-navy text-slate" : "bg-light-bg text-light-text"
       }`}
     >
-      <CursorLight />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <CursorLight />
+      </div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <header className="py-12 text-center">
           <div className="flex justify-end mb-4">
             <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} />
