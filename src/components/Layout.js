@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import CursorLight from './CursorLight';
 
 const NavItem = ({ to, label }) => {
   const location = useLocation();
@@ -9,29 +10,45 @@ const NavItem = ({ to, label }) => {
   return (
     <motion.div 
       className="relative py-2 px-4 mb-4"
-      whileHover="hover"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
       <Link to={to} className={`relative z-10 text-${isActive ? 'green' : 'gray-400'} hover:text-green transition-colors duration-300`}>
         {label}
       </Link>
-      <motion.div
-        className="absolute left-0 top-0 bottom-0 bg-lightest-navy rounded-r-full"
-        initial={{ width: isActive ? '100%' : '0%' }}
-        animate={{ width: isActive ? '100%' : '0%' }}
-        variants={{
-          hover: { width: '100%' }
-        }}
-        transition={{ duration: 0.3 }}
-      />
     </motion.div>
   );
 };
 
 const Layout = ({ children }) => {
   const location = useLocation();
+  const sections = useRef([]);
+
+  useEffect(() => {
+    sections.current = document.querySelectorAll('section');
+    let currentSectionIndex = 0;
+
+    const handleScroll = (e) => {
+      e.preventDefault();
+      const direction = e.deltaY > 0 ? 1 : -1;
+      const nextIndex = Math.max(0, Math.min(sections.current.length - 1, currentSectionIndex + direction));
+
+      if (nextIndex !== currentSectionIndex) {
+        currentSectionIndex = nextIndex;
+        sections.current[currentSectionIndex].scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('wheel', handleScroll, { passive: false });
+
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-navy text-slate overflow-hidden">
+    <div className="relative min-h-screen bg-navy text-slate">
+      <CursorLight />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.header
           initial={{ y: -100 }}

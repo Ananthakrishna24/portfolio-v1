@@ -16,3 +16,8 @@
     opacity: 0;
     transition: opacity 300ms ease-in;
   }
+
+  .cursor-light {
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
