@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import CursorLight from './CursorLight';
+import ThemeToggle from './ThemeToggle';
 
 const NavItem = ({ to, label }) => {
   const location = useLocation();
@@ -9,11 +10,11 @@ const NavItem = ({ to, label }) => {
 
   return (
     <motion.div 
-      className="relative py-2 px-4 mb-4"
+      className="relative py-2 px-4"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
-      <Link to={to} className={`relative z-10 text-${isActive ? 'green' : 'gray-400'} hover:text-green transition-colors duration-300`}>
+      <Link to={to} className={`relative z-10 ${isActive ? 'text-green dark:text-green' : 'text-light-text dark:text-gray-400'} hover:text-light-primary dark:hover:text-green transition-colors duration-300`}>
         {label}
       </Link>
     </motion.div>
@@ -23,6 +24,7 @@ const NavItem = ({ to, label }) => {
 const Layout = ({ children }) => {
   const location = useLocation();
   const sections = useRef([]);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     sections.current = document.querySelectorAll('section');
@@ -46,16 +48,24 @@ const Layout = ({ children }) => {
     };
   }, []);
 
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle('dark');
+  };
+
   return (
-    <div className="relative min-h-screen bg-navy text-slate">
+    <div className={`relative min-h-screen ${isDark ? 'dark bg-navy text-slate' : 'bg-light-bg text-light-text'}`}>
       <CursorLight />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.header
           className="py-12 relative z-10 text-center"
         >
+          <div className="flex justify-end mb-4">
+            <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} />
+          </div>
           <div>
             <motion.h1 
-              className="text-4xl sm:text-5xl font-bold text-lightest-slate"
+              className="text-4xl sm:text-5xl font-bold text-light-text dark:text-lightest-slate"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -63,7 +73,7 @@ const Layout = ({ children }) => {
               Ananthakrishna
             </motion.h1>
             <motion.p 
-              className="text-xl sm:text-2xl mt-2 text-green"
+              className="text-xl sm:text-2xl mt-2 text-light-primary dark:text-green"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -71,7 +81,7 @@ const Layout = ({ children }) => {
               Senior Frontend Engineer
             </motion.p>
             <motion.p 
-              className="mt-4 text-slate max-w-xl mx-auto"
+              className="mt-4 text-light-text dark:text-slate max-w-xl mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -88,7 +98,7 @@ const Layout = ({ children }) => {
           className="py-4 mb-8 relative z-10"
         >
           <motion.div 
-            className="flex flex-wrap justify-center space-x-4"
+            className="flex justify-center space-x-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
@@ -99,7 +109,7 @@ const Layout = ({ children }) => {
           </motion.div>
         </motion.nav>
 
-        <main>
+        <main className="max-w-3xl mx-auto">
           <motion.div
             key={location.pathname}
             initial={{ opacity: 0, y: 20 }}
@@ -122,7 +132,7 @@ const Layout = ({ children }) => {
               <motion.a
                 key={social}
                 href="#"
-                className="text-lightest-slate hover:text-green transition duration-300"
+                className="text-light-text dark:text-lightest-slate hover:text-light-primary dark:hover:text-green transition duration-300"
                 whileHover={{ scale: 1.2, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
               >
