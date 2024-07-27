@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ProjectCard = ({ title, description, link, technologies, stars }) => (
   <motion.div
@@ -39,44 +39,61 @@ const ProjectCard = ({ title, description, link, technologies, stars }) => (
 const Projects = () => {
   const projects = [
     {
-        title: "Weather Dashboard",
-        description: "A responsive web application that provides weather forecasts and current conditions for any location. Users can search for locations and get real-time weather data.",
-        link: "#",
-        technologies: ["React", "Redux", "OpenWeatherMap API", "Netlify"],
-        stars: 452
-      },
-      {
-        title: "E-commerce Store",
-        description: "A fully functional e-commerce website built with a modern tech stack. It features product listings, a shopping cart, user authentication, and a payment gateway.",
-        link: "#",
-        technologies: ["Next.js", "Stripe API", "Firebase", "Vercel"],
-        stars: 892
-      },
-      {
-        title: "Task Manager",
-        description: "A productivity app that helps users manage their daily tasks. Features include task creation, deadlines, reminders, and categorization.",
-        link: "#",
-        technologies: ["Vue.js", "Vuex", "Node.js", "MongoDB"],
-        stars: 289
-      },
-      {
-        title: "Chat Application",
-        description: "A real-time chat application with support for multiple rooms and direct messages. Includes user authentication and message history.",
-        link: "#",
-        technologies: ["Angular", "Socket.io", "Node.js", "Express"],
-        stars: 512
-      },
-      {
-        title: "Portfolio Website",
-        description: "A personal portfolio website to showcase projects, blogs, and contact information. Built with modern design principles and responsive layouts.",
-        link: "#",
-        technologies: ["HTML", "CSS", "JavaScript", "Bootstrap"],
-        stars: 645
-      }
+      title: "Weather Dashboard",
+      description: "A responsive web application that provides weather forecasts and current conditions for any location. Users can search for locations and get real-time weather data.",
+      link: "#",
+      technologies: ["React", "Redux", "OpenWeatherMap API", "Netlify"],
+      stars: 452
+    },
+    {
+      title: "E-commerce Store",
+      description: "A fully functional e-commerce website built with a modern tech stack. It features product listings, a shopping cart, user authentication, and a payment gateway.",
+      link: "#",
+      technologies: ["Next.js", "Stripe API", "Firebase", "Vercel"],
+      stars: 892
+    },
+    {
+      title: "Task Manager",
+      description: "A productivity app that helps users manage their daily tasks. Features include task creation, deadlines, reminders, and categorization.",
+      link: "#",
+      technologies: ["Vue.js", "Vuex", "Node.js", "MongoDB"],
+      stars: 289
+    },
+    {
+      title: "Chat Application",
+      description: "A real-time chat application with support for multiple rooms and direct messages. Includes user authentication and message history.",
+      link: "#",
+      technologies: ["Angular", "Socket.io", "Node.js", "Express"],
+      stars: 512
+    },
+    {
+      title: "Portfolio Website",
+      description: "A personal portfolio website to showcase projects, blogs, and contact information. Built with modern design principles and responsive layouts.",
+      link: "#",
+      technologies: ["HTML", "CSS", "JavaScript", "Bootstrap"],
+      stars: 645
+    }
   ];
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const projectsPerPage = 3;
+  const pageCount = Math.ceil(projects.length / projectsPerPage);
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, pageCount - 1));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 0));
+  };
+
+  const currentProjects = projects.slice(
+    currentPage * projectsPerPage,
+    (currentPage + 1) * projectsPerPage
+  );
+
   return (
-    <div className="h-full flex flex-col">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <motion.h2
         className="text-3xl font-bold mb-8 text-[#ccd6f6]"
         initial={{ opacity: 0, y: -20 }}
@@ -85,31 +102,42 @@ const Projects = () => {
       >
         Featured Projects
       </motion.h2>
-      <motion.div
-        className="flex-grow overflow-y-auto pr-4 scrollbar-hide"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: {
-              staggerChildren: 0.1
-            }
-          }
-        }}
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          '&::-webkit-scrollbar': {
-            display: 'none'
-          }
-        }}
-      >
-        {projects.map((project, index) => (
-          <ProjectCard key={index} {...project} />
-        ))}
-      </motion.div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          {currentProjects.map((project, index) => (
+            <ProjectCard key={index} {...project} />
+          ))}
+        </motion.div>
+      </AnimatePresence>
+      <div className="sticky bottom-4 left-0 right-0 flex justify-between items-center mt-8">
+        <button
+          onClick={handlePrevPage}
+          className={`bg-[#112240] text-[#64ffda] p-2 rounded-full hover:bg-[#1d3a6d] transition-colors duration-300 ${
+            currentPage === 0 ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          disabled={currentPage === 0}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        {currentPage < pageCount - 1 && (
+          <button
+            onClick={handleNextPage}
+            className="bg-[#112240] text-[#64ffda] p-2 rounded-full hover:bg-[#1d3a6d] transition-colors duration-300"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+      </div>
     </div>
   );
 };

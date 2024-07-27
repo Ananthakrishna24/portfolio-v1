@@ -51,12 +51,9 @@ const Layout = ({ children }) => {
       <CursorLight />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.header
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
-          className="py-12 relative z-10"
+          className="py-12 relative z-10 text-center"
         >
-          <div className="text-center lg:text-left">
+          <div>
             <motion.h1 
               className="text-4xl sm:text-5xl font-bold text-lightest-slate"
               initial={{ opacity: 0 }}
@@ -74,7 +71,7 @@ const Layout = ({ children }) => {
               Senior Frontend Engineer
             </motion.p>
             <motion.p 
-              className="mt-4 text-slate max-w-xl mx-auto lg:mx-0"
+              className="mt-4 text-slate max-w-xl mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -84,32 +81,35 @@ const Layout = ({ children }) => {
           </div>
         </motion.header>
 
-        <div className="flex flex-col lg:flex-row">
-          <nav className="w-full lg:w-1/4 mb-8 lg:mb-0">
-            <motion.div 
-              className="flex lg:flex-col justify-center lg:justify-start space-x-4 lg:space-x-0 lg:space-y-4"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <NavItem to="/" label="ABOUT" />
-              <NavItem to="/experience" label="EXPERIENCE" />
-              <NavItem to="/projects" label="PROJECTS" />
-            </motion.div>
-          </nav>
+        <motion.nav
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 100, delay: 0.8 }}
+          className="py-4 mb-8 relative z-10"
+        >
+          <motion.div 
+            className="flex flex-wrap justify-center space-x-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            <NavItem to="/" label="ABOUT" />
+            <NavItem to="/experience" label="EXPERIENCE" />
+            <NavItem to="/projects" label="PROJECTS" />
+          </motion.div>
+        </motion.nav>
 
-          <main className="w-full lg:w-3/4 lg:pl-8">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {children}
-            </motion.div>
-          </main>
-        </div>
+        <main>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {children}
+          </motion.div>
+        </main>
 
         <motion.footer
           initial={{ opacity: 0 }}

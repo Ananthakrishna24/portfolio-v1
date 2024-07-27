@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
 
 const CursorLight = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const cursorRef = useRef(null);
 
   useEffect(() => {
+    const cursor = cursorRef.current;
+
     const updateMousePosition = (ev) => {
-      setMousePosition({ x: ev.clientX, y: ev.clientY });
+      if (cursor) {
+        cursor.style.setProperty('--mouse-x', `${ev.clientX}px`);
+        cursor.style.setProperty('--mouse-y', `${ev.clientY}px`);
+      }
     };
 
     window.addEventListener('mousemove', updateMousePosition);
@@ -17,19 +21,11 @@ const CursorLight = () => {
   }, []);
 
   return (
-    <motion.div
-      className="cursor-light"
+    <div
+      ref={cursorRef}
+      className="cursor-light fixed inset-0 pointer-events-none z-50"
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        zIndex: 9999,
-      }}
-      animate={{
-        background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(29, 78, 216, 0.30), transparent 80%)`,
+        background: `radial-gradient(600px at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(29, 78, 216, 0.15), transparent 80%)`,
       }}
     />
   );
