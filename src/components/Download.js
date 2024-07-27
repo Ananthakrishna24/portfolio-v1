@@ -45,7 +45,7 @@ const Download = () => {
     setError(null);
     try {
       const response = await sendUserData(formData);
-      setDownloadUrl(response.downloadUrl);
+      setDownloadUrl("http://localhost:7222" + response.downloadUrl);
     } catch (err) {
       setError('An error occurred while processing your request. Please try again.');
     }
