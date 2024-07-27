@@ -32,74 +32,74 @@ const Layout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-navy text-slate overflow-hidden">
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100 }}
-        className="py-12 relative z-10"
-      >
-        <div className="container mx-auto px-4">
-          <motion.h1 
-            className="text-5xl font-bold text-lightest-slate"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            Ananthakrishna
-          </motion.h1>
-          <motion.p 
-            className="text-2xl mt-2 text-green"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Senior Frontend Engineer
-          </motion.p>
-          <motion.p 
-            className="mt-4 text-slate max-w-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            Crafting digital experiences that push the boundaries of web technology.
-          </motion.p>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.header
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ type: "spring", stiffness: 100 }}
+          className="py-12 relative z-10"
+        >
+          <div className="text-center lg:text-left">
+            <motion.h1 
+              className="text-4xl sm:text-5xl font-bold text-lightest-slate"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Ananthakrishna
+            </motion.h1>
+            <motion.p 
+              className="text-xl sm:text-2xl mt-2 text-green"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Senior Frontend Engineer
+            </motion.p>
+            <motion.p 
+              className="mt-4 text-slate max-w-xl mx-auto lg:mx-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              Crafting digital experiences that push the boundaries of web technology.
+            </motion.p>
+          </div>
+        </motion.header>
+
+        <div className="flex flex-col lg:flex-row">
+          <nav className="w-full lg:w-1/4 mb-8 lg:mb-0">
+            <motion.div 
+              className="flex lg:flex-col justify-center lg:justify-start space-x-4 lg:space-x-0 lg:space-y-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <NavItem to="/" label="ABOUT" />
+              <NavItem to="/experience" label="EXPERIENCE" />
+              <NavItem to="/projects" label="PROJECTS" />
+            </motion.div>
+          </nav>
+
+          <main className="w-full lg:w-3/4 lg:pl-8">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {children}
+            </motion.div>
+          </main>
         </div>
-      </motion.header>
 
-      <div className="container mx-auto px-4 flex">
-        <nav className="w-1/4 pt-8">
-          <motion.div 
-            className="space-y-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <NavItem to="/" label="ABOUT" />
-            <NavItem to="/experience" label="EXPERIENCE" />
-            <NavItem to="/projects" label="PROJECTS" />
-          </motion.div>
-        </nav>
-
-        <main className="w-3/4 relative z-10 pl-8">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {children}
-          </motion.div>
-        </main>
-      </div>
-
-      <motion.footer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="py-6 relative z-10"
-      >
-        <div className="container mx-auto px-4">
+        <motion.footer
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="py-6 mt-12 relative z-10"
+        >
           <div className="flex space-x-4 justify-center">
             {['github', 'linkedin', 'codepen', 'instagram', 'twitter'].map((social) => (
               <motion.a
@@ -113,8 +113,8 @@ const Layout = ({ children }) => {
               </motion.a>
             ))}
           </div>
-        </div>
-      </motion.footer>
+        </motion.footer>
+      </div>
     </div>
   );
 };
