@@ -71,7 +71,7 @@ const Layout = ({ children }) => {
             <NavItem to="/" label="ABOUT" />
             <NavItem to="/experience" label="EXPERIENCE" />
             <NavItem to="/projects" label="PROJECTS" />
-            <NavItem to="/create-portfolio" label="CREATE PORTFOLIO" className="hidden md:block" />
+            {/* <NavItem to="/create-portfolio" label="CREATE PORTFOLIO" className="hidden md:block" /> */}
           </div>
         </nav>
 
