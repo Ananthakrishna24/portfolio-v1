@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import CursorLight from "./CursorLight";
 //import ThemeToggle from "./ThemeToggle";
+import { USER_INFO } from "../constants/userInfo";
 
 const NavItem = ({ to, label, className = "" }) => {
   const location = useLocation();
@@ -29,6 +30,7 @@ const NavItem = ({ to, label, className = "" }) => {
 };
 
 const Layout = ({ children }) => {
+  const { name, title, email, phone, location, socialLinks } = USER_INFO;
   // const [isDark, setIsDark] = useState(true);
 
   // const toggleTheme = () => {
@@ -37,42 +39,29 @@ const Layout = ({ children }) => {
   // };
 
   // These would be replaced with actual data in the generated portfolio
-  const name = "Ananthakrishna";
-  const title = "Senior Frontend Engineer";
-  const email = "example@email.com";
-  const phone = "+1 (123) 456-7890";
-  const location = "New York, NY";
-
   return (
-    <div
-      className={`min-h-screen ${
-        true ? "dark bg-navy text-slate" : "bg-light-bg text-light-text"
-      }`}
-    >
+    <div className="min-h-screen dark bg-navy text-slate">
       <div className="fixed inset-0 pointer-events-none z-0">
         <CursorLight />
       </div>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <header className="py-12 text-center">
-          <div className="flex justify-end mb-4">
-            {/* <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} /> */}
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-light-text dark:text-lightest-slate mb-2">
+          <h1 className="text-4xl sm:text-5xl font-bold text-lightest-slate mb-2">
             {name}
           </h1>
-          <p className="text-xl sm:text-2xl mb-4 text-light-primary dark:text-green">
+          <p className="text-xl sm:text-2xl mb-4 text-green">
             {title}
           </p>
-          <div className="flex justify-center items-center space-x-4 mb-2 text-light-text dark:text-slate">
-            <a href={`mailto:${email}`} className="hover:text-light-primary dark:hover:text-green transition-colors duration-300">
+          <div className="flex justify-center items-center space-x-4 mb-2 text-slate">
+            <a href={`mailto:${email}`} className="hover:text-green transition-colors duration-300">
               {email}
             </a>
             <span>|</span>
-            <a href={`tel:${phone}`} className="hover:text-light-primary dark:hover:text-green transition-colors duration-300">
+            <a href={`tel:${phone}`} className="hover:text-green transition-colors duration-300">
               {phone}
             </a>
           </div>
-          <p className="text-light-text dark:text-slate">
+          <p className="text-slate">
             {location}
           </p>
         </header>
@@ -95,19 +84,17 @@ const Layout = ({ children }) => {
           className="py-6 mt-12 relative z-10"
         >
           <div className="flex space-x-4 justify-center">
-            {["github", "linkedin", "codepen", "instagram", "twitter"].map(
-              (social) => (
-                <motion.a
-                  key={social}
-                  href={`https://www.${social}.com`} // Replace with actual URLs if available
-                  className="text-light-text dark:text-lightest-slate hover:text-light-primary dark:hover:text-green transition duration-300"
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <i className={`fab fa-${social}`}></i>
-                </motion.a>
-              )
-            )}
+            {Object.entries(socialLinks).map(([platform, url]) => (
+              <motion.a
+                key={platform}
+                href={url}
+                className="text-lightest-slate hover:text-green transition duration-300"
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <i className={`fab fa-${platform}`}></i>
+              </motion.a>
+            ))}
           </div>
         </motion.footer>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { USER_INFO } from '../constants/userInfo';
 
 const JobEntry = ({ date, title, company, description, technologies, index }) => (
   <motion.div
@@ -39,41 +40,19 @@ const JobEntry = ({ date, title, company, description, technologies, index }) =>
 );
 
 const Experience = () => {
-  const jobs = [
-    {
-      date: "2022 — PRESENT",
-      title: "Senior Frontend Engineer",
-      company: "TechNova Solutions",
-      description: "Leading the development of next-generation web applications, focusing on performance optimization and accessibility. Mentoring junior developers and driving the adoption of best practices across the team.",
-      technologies: ["React", "TypeScript", "GraphQL", "Next.js"]
-    },
-    {
-      date: "2019 — 2022",
-      title: "Frontend Developer",
-      company: "InnovateTech",
-      description: "Developed and maintained complex web applications for a diverse client base. Implemented responsive designs and ensured cross-browser compatibility. Collaborated closely with UX/UI designers to bring creative concepts to life.",
-      technologies: ["Vue.js", "Nuxt.js", "SASS", "Jest"]
-    },
-    {
-      date: "2017 — 2019",
-      title: "Web Developer",
-      company: "DigitalCraft Agency",
-      description: "Created custom WordPress themes and plugins for small to medium-sized businesses. Optimized website performance and implemented SEO best practices. Provided technical support and training to clients.",
-      technologies: ["WordPress", "PHP", "jQuery", "MySQL"]
-    }
-  ];
+  const { experience } = USER_INFO;
 
   return (
     <div className="mx-auto">
       <motion.h2
-        className="text-3xl font-bold mb-8 text-light-text dark:text-lightest-slate"
+        className="text-3xl font-bold mb-8 text-lightest-slate"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         Where I've Worked
       </motion.h2>
-      {jobs.map((job, index) => (
+      {experience.map((job, index) => (
         <JobEntry key={index} {...job} index={index} />
       ))}
     </div>

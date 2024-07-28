@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { USER_INFO } from '../constants/userInfo';
 
 const ProjectCard = ({ title, description, link, technologies, stars }) => (
   <motion.div
@@ -37,44 +38,7 @@ const ProjectCard = ({ title, description, link, technologies, stars }) => (
 );
 
 const Projects = () => {
-  const projects = [
-    {
-      title: "Weather Dashboard",
-      description: "A responsive web application that provides weather forecasts and current conditions for any location. Users can search for locations and get real-time weather data.",
-      link: "#",
-      technologies: ["React", "Redux", "OpenWeatherMap API", "Netlify"],
-      stars: 452
-    },
-    {
-      title: "E-commerce Store",
-      description: "A fully functional e-commerce website built with a modern tech stack. It features product listings, a shopping cart, user authentication, and a payment gateway.",
-      link: "#",
-      technologies: ["Next.js", "Stripe API", "Firebase", "Vercel"],
-      stars: 892
-    },
-    {
-      title: "Task Manager",
-      description: "A productivity app that helps users manage their daily tasks. Features include task creation, deadlines, reminders, and categorization.",
-      link: "#",
-      technologies: ["Vue.js", "Vuex", "Node.js", "MongoDB"],
-      stars: 289
-    },
-    {
-      title: "Chat Application",
-      description: "A real-time chat application with support for multiple rooms and direct messages. Includes user authentication and message history.",
-      link: "#",
-      technologies: ["Angular", "Socket.io", "Node.js", "Express"],
-      stars: 512
-    },
-    {
-      title: "Portfolio Website",
-      description: "A personal portfolio website to showcase projects, blogs, and contact information. Built with modern design principles and responsive layouts.",
-      link: "#",
-      technologies: ["HTML", "CSS", "JavaScript", "Bootstrap"],
-      stars: 645
-    }
-  ];
-
+  const { projects } = USER_INFO;
   const [currentPage, setCurrentPage] = useState(0);
   const projectsPerPage = 3;
   const pageCount = Math.ceil(projects.length / projectsPerPage);
