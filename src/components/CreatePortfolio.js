@@ -2,14 +2,23 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sendUserData } from '../services/api';
 
-const Download = () => {
+const CreatePortfolio = () => {
   const [formData, setFormData] = useState({
     name: '',
     title: '',
     email: '',
+    phone: '',
+    location: '',
     about: '',
     experience: [{ date: '', title: '', company: '', description: '', technologies: [] }],
-    projects: [{ title: '', description: '', link: '', technologies: [], stars: 0 }]
+    projects: [{ title: '', description: '', link: '', technologies: [], stars: 0 }],
+    socialLinks: {
+      github: '',
+      linkedin: '',
+      twitter: '',
+      instagram: '',
+      codepen: ''
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState(null);
@@ -20,6 +29,11 @@ const Download = () => {
       const updatedData = [...formData[field]];
       updatedData[index][e.target.name] = e.target.value;
       setFormData({ ...formData, [field]: updatedData });
+    } else if (field === 'socialLinks') {
+      setFormData({
+        ...formData,
+        socialLinks: { ...formData.socialLinks, [e.target.name]: e.target.value }
+      });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -135,6 +149,30 @@ const Download = () => {
           </div>
 
           <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-light-text dark:text-lightest-slate">Phone</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-light-primary focus:ring-light-primary dark:bg-lightest-navy dark:border-gray-700 dark:text-white"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="location" className="block text-sm font-medium text-light-text dark:text-lightest-slate">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-light-primary focus:ring-light-primary dark:bg-lightest-navy dark:border-gray-700 dark:text-white"
+            />
+          </div>
+
+          <div>
             <label htmlFor="about" className="block text-sm font-medium text-light-text dark:text-lightest-slate">About Me</label>
             <textarea
               id="about"
@@ -244,44 +282,61 @@ const Download = () => {
           </div>
 
           <div>
-            <motion.button
-              type="submit"
+            <label className="block text-sm font-medium text-light-text dark:text-lightest-slate mb-2">Social Links</label>
+            {Object.keys(formData.socialLinks).map((platform) => (
+              <div key={platform} className="mb-2">
+                <label htmlFor={platform} className="block text-xs font-medium text-light-text dark:text-lightest-slate">{platform.charAt(0).toUpperCase() + platform.slice(1)}</label>
+                <input
+                  type="url"
+                  id={platform}
+                  name={platform}
+                  value={formData.socialLinks[platform]}
+                  onChange={(e) => handleChange(e, null, 'socialLinks')}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-light-primary focus:ring-light-primary dark:bg-lightest-navy dark:border-gray-700 dark:text-white"
+                  />
+                </div>
+              ))}
+            </div>
+  
+            <div>
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-light-primary dark:text-green bg-transparent hover:bg-light-primary hover:text-white dark:hover:bg-green dark:hover:text-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-primary dark:focus:ring-green transition-colors duration-200"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processing...' : 'Create Portfolio'}
+              </motion.button>
+            </div>
+          </form>
+        ) : (
+          <div className="text-center">
+            <p className="text-xl mb-4 text-light-text dark:text-lightest-slate">Your portfolio is ready!</p>
+            <motion.a
+              href={downloadUrl}
+              download
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-light-primary dark:text-green bg-transparent hover:bg-light-primary hover:text-white dark:hover:bg-green dark:hover:text-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-primary dark:focus:ring-green transition-colors duration-200"
-              disabled={isLoading}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-light-primary dark:text-green bg-transparent hover:bg-light-primary hover:text-white dark:hover:bg-green dark:hover:text-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-primary dark:focus:ring-green transition-colors duration-200"
             >
-              {isLoading ? 'Processing...' : 'Create Portfolio'}
-            </motion.button>
+              Download Portfolio
+            </motion.a>
           </div>
-        </form>
-      ) : (
-        <div className="text-center">
-          <p className="text-xl mb-4 text-light-text dark:text-lightest-slate">Your portfolio is ready!</p>
-          <motion.a
-            href={downloadUrl}
-            download
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-light-primary dark:text-green bg-transparent hover:bg-light-primary hover:text-white dark:hover:bg-green dark:hover:text-navy focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-primary dark:focus:ring-green transition-colors duration-200"
+        )}
+  
+        {error && (
+          <motion.p
+            className="mt-4 text-red-600 dark:text-red-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            Download Portfolio
-          </motion.a>
-        </div>
-      )}
-
-      {error && (
-        <motion.p
-          className="mt-4 text-red-600 dark:text-red-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          {error}
-        </motion.p>
-      )}
-    </div>
-  );
-};
-
-export default Download;
+            {error}
+          </motion.p>
+        )}
+      </div>
+    );
+  };
+  
+  export default CreatePortfolio;

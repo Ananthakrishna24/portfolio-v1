@@ -21,8 +21,8 @@ console.log(`Portfolio repository: ${PORTFOLIO_REPO}`);
 
 app.post('/api/create-portfolio', async (req, res) => {
   console.log('Received request to create portfolio');
-  const { name, title, email, about, experience, projects } = req.body;
-  console.log('Request body:', { name, title, email, about, experience, projects });
+  const { name, title, email, phone, location, about, experience, projects, socialLinks } = req.body;
+  console.log('Request body:', { name, title, email, phone, location, about, experience, projects, socialLinks });
 
   try {
     // Create a unique working directory
@@ -37,7 +37,7 @@ app.post('/api/create-portfolio', async (req, res) => {
 
     // Modify the necessary files with user data
     console.log('Updating project files with user data...');
-    await updateProjectFiles(workDir, { name, title, email, about, experience, projects });
+    await updateProjectFiles(workDir, { name, title, email, phone, location, about, experience, projects, socialLinks });
     console.log('Project files updated successfully');
 
     // Install dependencies
@@ -152,10 +152,42 @@ async function updateProjectFiles(workDir, userData) {
   console.log('Updating Layout.js');
   const layoutPath = path.join(workDir, 'src', 'components', 'Layout.js');
   let layoutContent = await fs.readFile(layoutPath, 'utf8');
-  layoutContent = layoutContent.replace(/Ananthakrishna/, userData.name);
-  layoutContent = layoutContent.replace(/Senior Frontend Engineer/, userData.title);
+  layoutContent = layoutContent.replace(/const name = "[^"]+";/, `const name = "${userData.name}";`);
+  layoutContent = layoutContent.replace(/const title = "[^"]+";/, `const title = "${userData.title}";`);
+  layoutContent = layoutContent.replace(/const email = "[^"]+";/, `const email = "${userData.email}";`);
+  layoutContent = layoutContent.replace(/const phone = "[^"]+";/, `const phone = "${userData.phone}";`);
+  layoutContent = layoutContent.replace(/const location = "[^"]+";/, `const location = "${userData.location}";`);
+  
+  // Update social links
+  const socialLinksUpdate = Object.entries(userData.socialLinks)
+    .filter(([_, url]) => url)
+    .map(([platform, url]) => `<motion.a
+                  key="${platform}"
+                  href="${url}"
+                  className="text-light-text dark:text-lightest-slate hover:text-light-primary dark:hover:text-green transition duration-300"
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fab fa-${platform}"></i>
+                </motion.a>`)
+    .join('\n              ');
+
+  layoutContent = layoutContent.replace(
+    /{["github", "linkedin", "codepen", "instagram", "twitter"].map\((?:\n|.)*?\)}/s,
+    socialLinksUpdate
+  );
+
   await fs.writeFile(layoutPath, layoutContent);
   console.log('Layout.js updated successfully');
+
+  // Remove CreatePortfolio component from the compiled version
+  console.log('Removing CreatePortfolio component');
+  const appPath = path.join(workDir, 'src', 'App.js');
+  let appContent = await fs.readFile(appPath, 'utf8');
+  appContent = appContent.replace(/import CreatePortfolio from '\.\/components\/CreatePortfolio';/, '');
+  appContent = appContent.replace(/<Route path="\/create-portfolio" component={CreatePortfolio} \/>/, '');
+  await fs.writeFile(appPath, appContent);
+  console.log('CreatePortfolio component removed successfully');
 
   console.log('All project files updated successfully');
 }
