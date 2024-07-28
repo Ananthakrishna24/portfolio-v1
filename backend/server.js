@@ -14,10 +14,29 @@ app.use(express.json());
 
 const TEMP_DIR = path.join(__dirname, 'temp');
 const PORTFOLIO_REPO = 'https://github.com/Ananthakrishna24/portfolio-v1.git';
+const INITIAL_INSTALL_DIR = path.join(TEMP_DIR, 'initial_install');
+
+let initialPackageJson = '';
 
 console.log('Server initialization started');
-console.log(`Temporary directory: ${TEMP_DIR}`);
-console.log(`Portfolio repository: ${PORTFOLIO_REPO}`);
+
+async function initialSetup() {
+  console.log('Performing initial setup...');
+  await fs.ensureDir(INITIAL_INSTALL_DIR);
+  await runCommand(`git clone ${PORTFOLIO_REPO} ${INITIAL_INSTALL_DIR}`);
+  await runCommand('npm install', { cwd: INITIAL_INSTALL_DIR });
+  initialPackageJson = await fs.readFile(path.join(INITIAL_INSTALL_DIR, 'package.json'), 'utf8');
+  console.log('Initial setup completed');
+}
+
+initialSetup().then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}).catch((error) => {
+  console.error('Failed to perform initial setup:', error);
+  process.exit(1);
+});
 
 app.post('/api/create-portfolio', async (req, res) => {
   console.log('Received request to create portfolio');
@@ -25,44 +44,46 @@ app.post('/api/create-portfolio', async (req, res) => {
   console.log('Request body:', { name, title, email, phone, location, about, experience, projects, socialLinks });
 
   try {
-    // Create a unique working directory
     const workDir = path.join(TEMP_DIR, `portfolio_${Date.now()}`);
     console.log(`Creating working directory: ${workDir}`);
     await fs.ensureDir(workDir);
 
-    // Clone the repository
     console.log('Cloning repository...');
     await runCommand(`git clone ${PORTFOLIO_REPO} ${workDir}`);
     console.log('Repository cloned successfully');
 
-    // Modify the necessary files with user data
     console.log('Updating project files with user data...');
     await updateProjectFiles(workDir, { name, title, email, phone, location, about, experience, projects, socialLinks });
     console.log('Project files updated successfully');
 
-    // Install dependencies
-    console.log('Installing dependencies...');
-    await runCommand('npm install', { cwd: workDir });
-    console.log('Dependencies installed successfully');
+    const currentPackageJson = await fs.readFile(path.join(workDir, 'package.json'), 'utf8');
+    if (currentPackageJson !== initialPackageJson) {
+      console.log('package.json has changed, installing dependencies...');
+      await runCommand('npm install', { cwd: workDir });
+      console.log('Dependencies installed successfully');
+    } else {
+      console.log('package.json unchanged, skipping npm install');
+    }
 
-    // Build the project
     console.log('Building the project...');
-    await runCommand('npm run build', { cwd: workDir });
-    console.log('Project built successfully');
+    try {
+      const buildOutput = await runCommand('npm run build', { cwd: workDir });
+      console.log('Build output:', buildOutput);
+    } catch (error) {
+      console.error('Build process failed:', error);
+      throw error;
+    }
 
-    // Create a zip of the build folder
     const buildDir = path.join(workDir, 'build');
     const zipPath = path.join(TEMP_DIR, `portfolio_${Date.now()}.zip`);
     console.log(`Creating zip file: ${zipPath}`);
     await createZip(buildDir, zipPath);
     console.log('Zip file created successfully');
 
-    // Clean up the working directory
     console.log(`Cleaning up working directory: ${workDir}`);
     rimraf.sync(workDir);
     console.log('Working directory cleaned up');
 
-    // Send the download URL
     const downloadUrl = `/download/${path.basename(zipPath)}`;
     console.log(`Sending download URL: ${downloadUrl}`);
     res.json({ downloadUrl });
@@ -100,12 +121,16 @@ async function runCommand(command, options = {}) {
   console.log(`Running command: ${command}`);
   return new Promise((resolve, reject) => {
     exec(command, options, (error, stdout, stderr) => {
+      console.log(`Command output:`);
+      console.log(stdout);
+      if (stderr) {
+        console.error(`Command stderr:`);
+        console.error(stderr);
+      }
       if (error) {
         console.error(`exec error: ${error.message}`);
-        console.error(`stderr: ${stderr}`);
         return reject(error);
       }
-      console.log(`Command output: ${stdout}`);
       resolve(stdout.trim());
     });
   });
