@@ -19,9 +19,11 @@ const JobEntry = ({ date, title, company, description, technologies, index }) =>
     <motion.h3 className="text-xl font-semibold mb-2 text-light-text dark:text-white" whileHover={{ x: 5 }}>
       {title} · {company}
     </motion.h3>
-    <motion.p className="mb-2 text-light-text dark:text-slate" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.2 + 0.3 }}>
-      {description}
-    </motion.p>
+    <motion.ul className="mb-2 text-light-text dark:text-slate list-disc pl-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.2 + 0.3 }}>
+      {description.split('\n').map((point, i) => (
+        <li key={i} className="mb-2">{point.trim().replace(/^•\s*/, '')}</li>
+      ))}
+    </motion.ul>
     <div className="flex flex-wrap">
       {technologies.map((tech, techIndex) => (
         <motion.span

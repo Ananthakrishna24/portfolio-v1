@@ -25,7 +25,7 @@ const CursorLight = () => {
       ref={cursorRef}
       className="cursor-light fixed inset-0 pointer-events-none z-50"
       style={{
-        background: `radial-gradient(600px at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(29, 78, 216, 0.15), transparent 80%)`,
+        background: `radial-gradient(600px at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(29, 78, 216, 0.05), transparent 80%)`,
       }}
     />
   );

@@ -2,7 +2,6 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import CursorLight from "./CursorLight";
-//import ThemeToggle from "./ThemeToggle";
 import { USER_INFO } from "../constants/userInfo";
 
 const NavItem = ({ to, label, className = "" }) => {
@@ -31,14 +30,7 @@ const NavItem = ({ to, label, className = "" }) => {
 
 const Layout = ({ children }) => {
   const { name, title, email, phone, location, socialLinks } = USER_INFO;
-  // const [isDark, setIsDark] = useState(true);
 
-  // const toggleTheme = () => {
-  //   setIsDark(!isDark);
-  //   document.documentElement.classList.toggle("dark");
-  // };
-
-  // These would be replaced with actual data in the generated portfolio
   return (
     <div className="min-h-screen dark bg-navy text-slate">
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -71,7 +63,6 @@ const Layout = ({ children }) => {
             <NavItem to="/" label="ABOUT" />
             <NavItem to="/experience" label="EXPERIENCE" />
             <NavItem to="/projects" label="PROJECTS" />
-            {/* <NavItem to="/create-portfolio" label="CREATE PORTFOLIO" className="hidden md:block" /> */}
           </div>
         </nav>
 
