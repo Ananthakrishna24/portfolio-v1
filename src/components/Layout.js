@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import CursorLight from "./CursorLight";
-import ThemeToggle from "./ThemeToggle";
+//import ThemeToggle from "./ThemeToggle";
 
 const NavItem = ({ to, label, className = "" }) => {
   const location = useLocation();
@@ -29,12 +29,12 @@ const NavItem = ({ to, label, className = "" }) => {
 };
 
 const Layout = ({ children }) => {
-  const [isDark, setIsDark] = useState(true);
+  // const [isDark, setIsDark] = useState(true);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
-  };
+  // const toggleTheme = () => {
+  //   setIsDark(!isDark);
+  //   document.documentElement.classList.toggle("dark");
+  // };
 
   // These would be replaced with actual data in the generated portfolio
   const name = "Ananthakrishna";
@@ -45,9 +45,7 @@ const Layout = ({ children }) => {
 
   return (
     <div
-      className={`min-h-screen ${
-        isDark ? "dark bg-navy text-slate" : "bg-light-bg text-light-text"
-      }`}
+      className={`min-h-screen`}
     >
       <div className="fixed inset-0 pointer-events-none z-0">
         <CursorLight />
