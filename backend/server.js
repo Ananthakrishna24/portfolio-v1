@@ -14,12 +14,62 @@ app.use(express.json({ limit: '1mb' })); // Limit payload size
 
 const TEMP_DIR = path.join(__dirname, 'temp');
 const PORTFOLIO_TEMPLATE = path.join(__dirname, 'portfolio-template');
+const PORTFOLIO_REPO = 'https://github.com/Ananthakrishna24/portfolio-v1.git';
 
 console.log('Server initialization started');
+
+async function cloneRepository() {
+  console.log('Cloning repository...');
+  await fs.rm(PORTFOLIO_TEMPLATE, { recursive: true, force: true });
+  await new Promise((resolve, reject) => {
+    exec(`git clone ${PORTFOLIO_REPO} ${PORTFOLIO_TEMPLATE}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return reject(error);
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      resolve();
+    });
+  });
+  console.log('Repository cloned successfully');
+}
+
+async function buildTemplate() {
+  console.log('Building template...');
+  await new Promise((resolve, reject) => {
+    exec('npm install && npm run build', { cwd: PORTFOLIO_TEMPLATE }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return reject(error);
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      resolve();
+    });
+  });
+  console.log('Template built successfully');
+}
 
 async function initialSetup() {
   console.log('Performing initial setup...');
   await fs.mkdir(TEMP_DIR, { recursive: true });
+  
+  try {
+    const templateStats = await fs.stat(PORTFOLIO_TEMPLATE);
+    if (!templateStats.isDirectory()) {
+      throw new Error('PORTFOLIO_TEMPLATE is not a directory');
+    }
+    const templateContents = await fs.readdir(PORTFOLIO_TEMPLATE);
+    if (templateContents.length === 0) {
+      throw new Error('PORTFOLIO_TEMPLATE is empty');
+    }
+  } catch (error) {
+    console.log('Portfolio template not found or empty, cloning repository...');
+    await cloneRepository();
+    await buildTemplate();
+  }
+  
   console.log('Initial setup completed');
 }
 
