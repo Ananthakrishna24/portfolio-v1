@@ -43,6 +43,18 @@ async function findAvailablePort(initialPort) {
   throw new Error('No available ports found');
 }
 
+async function ensureInitialInstall() {
+  if (!cachedInitialInstall) {
+    console.log('Creating initial installation...');
+    await fs.mkdir(INITIAL_INSTALL_DIR, { recursive: true });
+    await runCommand(`git clone ${PORTFOLIO_REPO} ${INITIAL_INSTALL_DIR}`);
+    await runCommand('npm install', { cwd: INITIAL_INSTALL_DIR });
+    cachedInitialInstall = INITIAL_INSTALL_DIR;
+    console.log('Initial installation completed');
+  }
+  return cachedInitialInstall;
+}
+
 initialSetup().then(() => {
   findAvailablePort(port).then((availablePort) => {
     app.listen(availablePort, () => {
@@ -59,20 +71,18 @@ initialSetup().then(() => {
 
 app.post('/api/create-portfolio', async (req, res) => {
   console.log('Received request to create portfolio');
-  const { name, title, email, phone, location, about, experience, projects, socialLinks } = req.body;
+  const userData = req.body;
 
   try {
+    const initialInstallDir = await ensureInitialInstall();
     const workDir = path.join(TEMP_DIR, `portfolio_${Date.now()}`);
     await fs.mkdir(workDir, { recursive: true });
 
-    console.log('Cloning repository...');
-    await runCommand(`git clone ${PORTFOLIO_REPO} ${workDir}`);
+    console.log('Copying initial installation...');
+    await runCommand(`cp -R ${initialInstallDir}/* ${workDir}`);
 
     console.log('Updating project files with user data...');
-    await updateProjectFiles(workDir, { name, title, email, phone, location, about, experience, projects, socialLinks });
-
-    console.log('Installing dependencies...');
-    await runCommand('npm install', { cwd: workDir });
+    await updateProjectFiles(workDir, userData);
 
     console.log('Building the project...');
     await runCommand('npm run build', { cwd: workDir });
@@ -126,53 +136,27 @@ async function updateProjectFiles(workDir, userData) {
   };
 
   await updateFile(path.join(workDir, 'src', 'components', 'About.js'), content => 
-    content.replace(/About Me(?:\n|.)*?<\/motion.div>/s, `About Me</motion.h2>
-      <motion.div
-        className="space-y-6 text-lg leading-relaxed text-light-text dark:text-[#8892b0]"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.p variants={childVariants} className="text-justify hyphens-auto">
-          ${userData.about}
-        </motion.p>
-      </motion.div>`)
+    content.replace(/const { about } = USER_INFO;/, 
+    `const { about } = ${JSON.stringify({ about: userData.about })};`)
   );
 
   await updateFile(path.join(workDir, 'src', 'components', 'Experience.js'), content =>
-    content.replace(/const jobs = \[(?:\n|.)*?\];/s, `const jobs = ${JSON.stringify(userData.experience, null, 2)};`)
+    content.replace(/const { experience } = USER_INFO;/, 
+    `const { experience } = ${JSON.stringify({ experience: userData.experience })};`)
   );
 
   await updateFile(path.join(workDir, 'src', 'components', 'Projects.js'), content =>
-    content.replace(/const projects = \[(?:\n|.)*?\];/s, `const projects = ${JSON.stringify(userData.projects, null, 2)};`)
+    content.replace(/const { projects } = USER_INFO;/, 
+    `const { projects } = ${JSON.stringify({ projects: userData.projects })};`)
   );
 
   await updateFile(path.join(workDir, 'src', 'components', 'Layout.js'), content => {
-    content = content.replace(/const name = "[^"]+";/, `const name = "${userData.name}";`);
-    content = content.replace(/const title = "[^"]+";/, `const title = "${userData.title}";`);
-    content = content.replace(/const email = "[^"]+";/, `const email = "${userData.email}";`);
-    content = content.replace(/const phone = "[^"]+";/, `const phone = "${userData.phone}";`);
-    content = content.replace(/const location = "[^"]+";/, `const location = "${userData.location}";`);
-    
-    const socialLinksUpdate = Object.entries(userData.socialLinks)
-      .filter(([_, url]) => url)
-      .map(([platform, url]) => `<motion.a
-                    key="${platform}"
-                    href="${url}"
-                    className="text-light-text dark:text-lightest-slate hover:text-light-primary dark:hover:text-green transition duration-300"
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <i className="fab fa-${platform}"></i>
-                  </motion.a>`)
-      .join('\n              ');
-
-    return content.replace(
-      /{["github", "linkedin", "codepen", "instagram", "twitter"].map\((?:\n|.)*?\)}/s,
-      socialLinksUpdate
-    );
+    content = content.replace(/const { name, title, email, phone, location, socialLinks } = USER_INFO;/,
+      `const { name, title, email, phone, location, socialLinks } = ${JSON.stringify(userData)};`);
+    return content;
   });
 
+  // Remove CreatePortfolio component import and route
   await updateFile(path.join(workDir, 'src', 'App.js'), content => {
     content = content.replace(/import CreatePortfolio from '\.\/components\/CreatePortfolio';/, '');
     return content.replace(/<Route path="\/create-portfolio" component={CreatePortfolio} \/>/, '');
