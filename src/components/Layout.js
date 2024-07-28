@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import CursorLight from "./CursorLight";
-import ThemeToggle from "./ThemeToggle";
+//import ThemeToggle from "./ThemeToggle";
 
 const NavItem = ({ to, label, className = "" }) => {
   const location = useLocation();
