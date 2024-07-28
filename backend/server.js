@@ -5,6 +5,8 @@ const path = require('path');
 const archiver = require('archiver');
 const { exec } = require('child_process');
 const rimraf = require('rimraf');
+const net = require('net');
+
 
 const app = express();
 const port = process.env.PORT || 7222;
@@ -20,18 +22,52 @@ let initialPackageJson = '';
 
 console.log('Server initialization started');
 
+function findAvailablePort(initialPort) {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.unref();
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        findAvailablePort(initialPort + 1).then(resolve, reject);
+      } else {
+        reject(err);
+      }
+    });
+    server.listen(initialPort, () => {
+      const { port } = server.address();
+      server.close(() => {
+        resolve(port);
+      });
+    });
+  });
+}
+
 async function initialSetup() {
   console.log('Performing initial setup...');
   await fs.ensureDir(INITIAL_INSTALL_DIR);
-  await runCommand(`git clone ${PORTFOLIO_REPO} ${INITIAL_INSTALL_DIR}`);
+  
+  if (await fs.pathExists(path.join(INITIAL_INSTALL_DIR, '.git'))) {
+    console.log('Repository already exists, pulling latest changes...');
+    await runCommand('git pull', { cwd: INITIAL_INSTALL_DIR });
+  } else {
+    console.log('Cloning repository...');
+    await fs.emptyDir(INITIAL_INSTALL_DIR);
+    await runCommand(`git clone ${PORTFOLIO_REPO} ${INITIAL_INSTALL_DIR}`);
+  }
+  
   await runCommand('npm install', { cwd: INITIAL_INSTALL_DIR });
   initialPackageJson = await fs.readFile(path.join(INITIAL_INSTALL_DIR, 'package.json'), 'utf8');
   console.log('Initial setup completed');
 }
 
 initialSetup().then(() => {
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  findAvailablePort(port).then((availablePort) => {
+    app.listen(availablePort, () => {
+      console.log(`Server is running on port ${availablePort}`);
+    });
+  }).catch((err) => {
+    console.error('Failed to find an available port:', err);
+    process.exit(1);
   });
 }).catch((error) => {
   console.error('Failed to perform initial setup:', error);
