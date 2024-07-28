@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import CursorLight from "./CursorLight";
-//import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "./ThemeToggle";
 
 const NavItem = ({ to, label, className = "" }) => {
   const location = useLocation();
@@ -45,7 +45,9 @@ const Layout = ({ children }) => {
 
   return (
     <div
-      className={`min-h-screen`}
+      className={`min-h-screen ${
+        true ? "dark bg-navy text-slate" : "bg-light-bg text-light-text"
+      }`}
     >
       <div className="fixed inset-0 pointer-events-none z-0">
         <CursorLight />
