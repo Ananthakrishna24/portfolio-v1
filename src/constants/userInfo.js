@@ -3,7 +3,7 @@ export const USER_INFO = {
   title: "Associate Software Engineer",
   email: "ananthaak24@outlook.com",
   phone: "+91 9113607580",
-  location: "Bangalore, India",
+  // location: "Bangalore, India",
   about: "As a Computer Science engineer, I am driven by the aspiration to develop products that have a meaningful impact on society. With a foundational experience in technologies such as ReactJs, Angular, .NET Core, among others, the focus remains on solving complex problems and elevating the team's performance. Embracing the ability to swiftly adapt to a variety of technologies, there's a readiness to contribute effectively to any organization and its teams.",
   experience: [
     {
