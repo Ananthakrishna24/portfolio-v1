@@ -19,7 +19,7 @@ export const USER_INFO = {
       institution: "East West Institute of Technology - Bangalore",
       degree: "B.E. in Computer Science and Engineering",
       date: "Aug 2019 - Jun 2023",
-      gpa: "CGPA: 7.86/10",
+      // gpa: "CGPA: 7.86/10",
       courses: "Object Oriented Programming, Databases, Discrete Maths, Data Structures and Algorithms, Operating Systems, Computer Networks, Machine Learning, Data Mining, Advance Data Structures and Algorithms"
     },
   ],
