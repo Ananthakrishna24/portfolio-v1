@@ -11,10 +11,7 @@ const NavItem = ({ to, label, icon: Icon, className = "", isMobile }) => {
   const isActive = location.pathname === to;
 
   return (
-    <Link
-      to={to}
-      className={`relative py-2 px-4 ${className}`}
-    >
+    <Link to={to} className={`relative py-2 px-4 ${className}`}>
       <motion.div
         className={`w-full h-full flex items-center justify-center ${
           isActive
@@ -25,7 +22,9 @@ const NavItem = ({ to, label, icon: Icon, className = "", isMobile }) => {
         whileTap={{ scale: 0.95 }}
       >
         {isMobile && <Icon size={24} className="mr-2" />}
-        <span className={isMobile ? "text-sm" : "text-sm font-medium"}>{label}</span>
+        <span className={isMobile ? "text-sm" : "text-sm font-medium"}>
+          {label}
+        </span>
       </motion.div>
       {!isMobile && (
         <motion.div
@@ -40,16 +39,22 @@ const NavItem = ({ to, label, icon: Icon, className = "", isMobile }) => {
 };
 
 const Logo = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <circle cx="16" cy="16" r="16" fill="#64ffda" />
-    <text 
-      x="16" 
-      y="16" 
-      fontSize="18" 
-      fontWeight="bold" 
-      fontFamily="Arial, sans-serif" 
-      fill="#0a192f" 
-      textAnchor="middle" 
+    <text
+      x="16"
+      y="16"
+      fontSize="18"
+      fontWeight="bold"
+      fontFamily="Arial, sans-serif"
+      fill="#0a192f"
+      textAnchor="middle"
       dominantBaseline="central"
     >
       A
@@ -58,7 +63,8 @@ const Logo = () => (
 );
 
 const Layout = ({ children }) => {
-  const { name, title, email, phone, location, socialLinks, resumeLink } = USER_INFO;
+  const { name, title, email, phone, location, socialLinks, resumeLink } =
+    USER_INFO;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
   const [showMobilePopup, setShowMobilePopup] = useState(true);
 
@@ -67,23 +73,26 @@ const Layout = ({ children }) => {
       setIsMobile(window.innerWidth < 640);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     const viewport = document.querySelector("meta[name=viewport]");
     if (viewport) {
       if (isMobile) {
-        viewport.setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
+        viewport.setAttribute(
+          "content",
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        );
       } else {
         viewport.setAttribute("content", "width=device-width, initial-scale=1");
       }
     }
 
     // Add background color to html and body
-    document.documentElement.style.backgroundColor = '#0a192f';
-    document.body.style.backgroundColor = '#0a192f';
+    document.documentElement.style.backgroundColor = "#0a192f";
+    document.body.style.backgroundColor = "#0a192f";
   }, [isMobile]);
 
   return (
@@ -123,26 +132,28 @@ const Layout = ({ children }) => {
       )}
 
       <div className="flex-grow flex flex-col">
-        <div className="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
           <header className="py-12 text-center">
             <h1 className="text-4xl sm:text-5xl font-bold text-lightest-slate mb-2">
               {name}
             </h1>
-            <p className="text-xl sm:text-2xl mb-4 text-green">
-              {title}
-            </p>
+            <p className="text-xl sm:text-2xl mb-4 text-green">{title}</p>
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 text-slate">
-              <a href={`mailto:${email}`} className="hover:text-green transition-colors duration-300">
+              <a
+                href={`mailto:${email}`}
+                className="hover:text-green transition-colors duration-300"
+              >
                 {email}
               </a>
               <span className="hidden sm:inline">|</span>
-              <a href={`tel:${phone}`} className="hover:text-green transition-colors duration-300">
+              <a
+                href={`tel:${phone}`}
+                className="hover:text-green transition-colors duration-300"
+              >
                 {phone}
               </a>
             </div>
-            <p className="text-slate mb-6">
-              {location}
-            </p>
+            <p className="text-slate mb-6">{location}</p>
             <motion.a
               href={resumeLink}
               download
@@ -152,7 +163,7 @@ const Layout = ({ children }) => {
             >
               Download CV
             </motion.a>
-            
+
             {isMobile && (
               <div className="mt-6 flex justify-center space-x-6">
                 {Object.entries(socialLinks).map(([platform, url]) => (
@@ -181,7 +192,9 @@ const Layout = ({ children }) => {
         >
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center text-lightest-slate">
-              <p>&copy; {new Date().getFullYear()} {name}. All rights reserved.</p>
+              <p>
+                &copy; {new Date().getFullYear()} {name}. All rights reserved.
+              </p>
             </div>
           </div>
         </motion.footer>
@@ -192,8 +205,18 @@ const Layout = ({ children }) => {
           <nav className="fixed bottom-0 left-0 right-0 bg-navy border-t border-light-primary dark:border-green z-50">
             <div className="flex justify-around h-20">
               <NavItem to="/" label="ABOUT" icon={User} isMobile={true} />
-              <NavItem to="/experience" label="EXPERIENCE" icon={Briefcase} isMobile={true} />
-              <NavItem to="/projects" label="PROJECTS" icon={Code} isMobile={true} />
+              <NavItem
+                to="/experience"
+                label="EXPERIENCE"
+                icon={Briefcase}
+                isMobile={true}
+              />
+              <NavItem
+                to="/projects"
+                label="PROJECTS"
+                icon={Code}
+                isMobile={true}
+              />
             </div>
           </nav>
           <AnimatePresence>
