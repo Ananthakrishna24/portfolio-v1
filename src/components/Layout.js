@@ -122,28 +122,6 @@ const Layout = ({ children }) => {
 
       <div className="flex-grow flex flex-col">
         <div className="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {isMobile && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="py-4 relative z-10"
-            >
-              <div className="flex justify-center space-x-6">
-                {Object.entries(socialLinks).map(([platform, url]) => (
-                  <motion.a
-                    key={platform}
-                    href={url}
-                    className="text-lightest-slate hover:text-green transition duration-300"
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <i className={`fab fa-${platform} text-3xl`}></i>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          )}
           <header className="py-12 text-center">
             <h1 className="text-4xl sm:text-5xl font-bold text-lightest-slate mb-2">
               {name}
@@ -163,16 +141,34 @@ const Layout = ({ children }) => {
             <p className="text-slate mb-6">
               {location}
             </p>
-            <a
+            <motion.a
               href={resumeLink}
               download
               className="inline-block px-6 py-3 text-green border border-green rounded hover:bg-green hover:bg-opacity-10 transition-colors duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               Download CV
-            </a>
+            </motion.a>
+            
+            {isMobile && (
+              <div className="mt-6 flex justify-center space-x-6">
+                {Object.entries(socialLinks).map(([platform, url]) => (
+                  <motion.a
+                    key={platform}
+                    href={url}
+                    className="text-lightest-slate hover:text-green transition duration-300"
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <i className={`fab fa-${platform} text-3xl`}></i>
+                  </motion.a>
+                ))}
+              </div>
+            )}
           </header>
 
-          <main>{children}</main>
+          <main className="mb-24 sm:mb-0">{children}</main>
         </div>
 
         <motion.footer
