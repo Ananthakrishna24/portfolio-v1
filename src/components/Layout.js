@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { User, Briefcase, Code } from "lucide-react";
 import CursorLight from "./CursorLight";
 import { USER_INFO } from "../constants/userInfo";
+import MobilePopup from "./MobilePopup";
 
 const NavItem = ({ to, label, icon: Icon, className = "", isMobile }) => {
   const location = useLocation();
@@ -59,6 +60,7 @@ const Logo = () => (
 const Layout = ({ children }) => {
   const { name, title, email, phone, location, socialLinks, resumeLink } = USER_INFO;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+  const [showMobilePopup, setShowMobilePopup] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -186,13 +188,20 @@ const Layout = ({ children }) => {
       </div>
 
       {isMobile && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-navy border-t border-light-primary dark:border-green z-50">
-          <div className="flex justify-around h-20">
-            <NavItem to="/" label="ABOUT" icon={User} isMobile={true} />
-            <NavItem to="/experience" label="EXPERIENCE" icon={Briefcase} isMobile={true} />
-            <NavItem to="/projects" label="PROJECTS" icon={Code} isMobile={true} />
-          </div>
-        </nav>
+        <>
+          <nav className="fixed bottom-0 left-0 right-0 bg-navy border-t border-light-primary dark:border-green z-50">
+            <div className="flex justify-around h-20">
+              <NavItem to="/" label="ABOUT" icon={User} isMobile={true} />
+              <NavItem to="/experience" label="EXPERIENCE" icon={Briefcase} isMobile={true} />
+              <NavItem to="/projects" label="PROJECTS" icon={Code} isMobile={true} />
+            </div>
+          </nav>
+          <AnimatePresence>
+            {showMobilePopup && (
+              <MobilePopup onClose={() => setShowMobilePopup(false)} />
+            )}
+          </AnimatePresence>
+        </>
       )}
     </div>
   );
