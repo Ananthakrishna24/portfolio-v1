@@ -23,8 +23,8 @@ const NavItem = ({ to, label, icon: Icon, className = "", isMobile }) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {isMobile && <Icon size={20} className="mr-1" />}
-        <span className={isMobile ? "text-xs" : "text-sm font-medium"}>{label}</span>
+        {isMobile && <Icon size={24} className="mr-2" />}
+        <span className={isMobile ? "text-sm" : "text-sm font-medium"}>{label}</span>
       </motion.div>
       {!isMobile && (
         <motion.div
@@ -57,7 +57,7 @@ const Logo = () => (
 );
 
 const Layout = ({ children }) => {
-  const { name, title, email, phone, location, socialLinks } = USER_INFO;
+  const { name, title, email, phone, location, socialLinks, resumeLink } = USER_INFO;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
   useEffect(() => {
@@ -78,6 +78,10 @@ const Layout = ({ children }) => {
         viewport.setAttribute("content", "width=device-width, initial-scale=1");
       }
     }
+
+    // Add background color to html and body
+    document.documentElement.style.backgroundColor = '#0a192f';
+    document.body.style.backgroundColor = '#0a192f';
   }, [isMobile]);
 
   return (
@@ -98,7 +102,7 @@ const Layout = ({ children }) => {
                 <NavItem to="/experience" label="Experience" isMobile={false} />
                 <NavItem to="/projects" label="Projects" isMobile={false} />
               </div>
-              <div className="flex space-x-4">
+              <div className="flex space-x-6">
                 {Object.entries(socialLinks).map(([platform, url]) => (
                   <motion.a
                     key={platform}
@@ -107,7 +111,7 @@ const Layout = ({ children }) => {
                     whileHover={{ scale: 1.2, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <i className={`fab fa-${platform}`}></i>
+                    <i className={`fab fa-${platform} text-2xl`}></i>
                   </motion.a>
                 ))}
               </div>
@@ -125,7 +129,7 @@ const Layout = ({ children }) => {
               transition={{ delay: 1 }}
               className="py-4 relative z-10"
             >
-              <div className="flex space-x-4 justify-center">
+              <div className="flex justify-center space-x-6">
                 {Object.entries(socialLinks).map(([platform, url]) => (
                   <motion.a
                     key={platform}
@@ -134,31 +138,38 @@ const Layout = ({ children }) => {
                     whileHover={{ scale: 1.2, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <i className={`fab fa-${platform}`}></i>
+                    <i className={`fab fa-${platform} text-3xl`}></i>
                   </motion.a>
                 ))}
               </div>
             </motion.div>
           )}
           <header className="py-12 text-center">
-            <h1 className="text-4xl sm:text-5xl font-bold text-lightest-slate mb-2 mobile-center">
+            <h1 className="text-4xl sm:text-5xl font-bold text-lightest-slate mb-2">
               {name}
             </h1>
             <p className="text-xl sm:text-2xl mb-4 text-green">
               {title}
             </p>
-            <div className="flex justify-center items-center space-x-4 mb-2 text-slate">
+            <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-4 text-slate">
               <a href={`mailto:${email}`} className="hover:text-green transition-colors duration-300">
                 {email}
               </a>
-              <span>|</span>
+              <span className="hidden sm:inline">|</span>
               <a href={`tel:${phone}`} className="hover:text-green transition-colors duration-300">
                 {phone}
               </a>
             </div>
-            <p className="text-slate">
+            <p className="text-slate mb-6">
               {location}
             </p>
+            <a
+              href={resumeLink}
+              download
+              className="inline-block px-6 py-3 text-green border border-green rounded hover:bg-green hover:bg-opacity-10 transition-colors duration-300"
+            >
+              Download CV
+            </a>
           </header>
 
           <main>{children}</main>
@@ -180,7 +191,7 @@ const Layout = ({ children }) => {
 
       {isMobile && (
         <nav className="fixed bottom-0 left-0 right-0 bg-navy border-t border-light-primary dark:border-green z-50">
-          <div className="flex justify-around h-16">
+          <div className="flex justify-around h-20">
             <NavItem to="/" label="ABOUT" icon={User} isMobile={true} />
             <NavItem to="/experience" label="EXPERIENCE" icon={Briefcase} isMobile={true} />
             <NavItem to="/projects" label="PROJECTS" icon={Code} isMobile={true} />

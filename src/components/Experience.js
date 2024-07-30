@@ -47,7 +47,7 @@ const Experience = () => {
   return (
     <div className="mx-auto">
       <motion.h2
-        className="text-3xl font-bold mb-8 text-lightest-slate"
+        className="text-3xl font-bold mb-8 text-lightest-slate text-center sm:text-left"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
